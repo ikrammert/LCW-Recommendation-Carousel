@@ -172,6 +172,22 @@
             }
             .carousel-button.prev { left: 0; }
             .carousel-button.next { right: 0; }
+            
+            @media (max-width: 768px) {
+                .product-card {
+                    flex: 0 0 calc((100% - (15px * 1)) / 2.5);
+                    min-width: calc((100% - (15px * 1)) / 2.5);
+                }
+                .carousel-container {
+                    padding: 0 20px;
+                }
+                .carousel-title {
+                    font-size: 16px;
+                }
+                .product-price {
+                    font-size: 14px;
+                }
+            }
         `;
 
         $('<style>').addClass('carousel-style').html(css).appendTo('head');
