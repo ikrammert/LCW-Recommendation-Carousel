@@ -21,6 +21,9 @@
             document.head.appendChild(script);
         } else {
             products = await getProducts();
+            buildCSS();
+            buildHTML();
+            setEvents();
         }
     };
 
