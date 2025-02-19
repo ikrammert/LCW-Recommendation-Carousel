@@ -187,6 +187,9 @@
                 .custom-carousel-button.custom-next { right: 5px; }
             }
         `;
+        if (!document.querySelector('.custom-carousel-style')) {
+            $('<style>').addClass('custom-carousel-style').html(css).appendTo('head');
+        }
     };
 
     const setEvents = () => {
