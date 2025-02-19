@@ -187,11 +187,6 @@
                 .custom-carousel-button.custom-next { right: 5px; }
             }
         `;
-
-        // Only add styles if they don't already exist
-        if (!document.querySelector('.custom-carousel-style')) {
-            $('<style>').addClass('custom-carousel-style').html(css).appendTo('head');
-        }
     };
 
     const setEvents = () => {
