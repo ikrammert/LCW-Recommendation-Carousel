@@ -1,7 +1,7 @@
 (() => {
     // değişkenler
-    const STORAGE_KEY = 'lcw_carousel_data';
-    const FAVORITES_KEY = 'lcw_favorites';
+    const STORAGE_KEY = 'lcw_custom_carousel_data';
+    const FAVORITES_KEY = 'lcw_custom_favorites';
     let products = [];
 
     const init = async () => {
@@ -70,77 +70,72 @@
     const buildHTML = () => {
         const favorites = getFavorites(); //favorileri al
         const html = `
-            <div class="carousel-container">
-                <h2 class="carousel-title">You Might Also Like</h2> 
-                <button class="carousel-button prev">❮</button>
-                <div class="product-carousel">
+            <div class="custom-carousel-container">
+                <h2 class="custom-carousel-title">You Might Also Like</h2> 
+                <button class="custom-carousel-button custom-prev">❮</button>
+                <div class="custom-product-carousel">
                     ${products.map(product => `
-                        <div class="product-card">
+                        <div class="custom-product-card">
                             <a href="${product.url}" target="_blank">
-                                <img src="${product.img}" alt="${product.name}" class="product-image">
-                                <p class="product-title">${product.name}</p>
-                                <div class="product-price">${product.price} TL</div>
+                                <img src="${product.img}" alt="${product.name}" class="custom-product-image">
+                                <p class="custom-product-title">${product.name}</p>
+                                <div class="custom-product-price">${product.price} TL</div>
                             </a>
-                            <div class="heart-icon ${favorites.includes(product.id) ? 'active' : ''}" data-id="${product.id}">❤</div>
+                            <div class="custom-heart-icon ${favorites.includes(product.id) ? 'active' : ''}" data-id="${product.id}">❤</div>
                         </div>
                     `).join('')}
                 </div>
-                <button class="carousel-button next">❯</button>
+                <button class="custom-carousel-button custom-next">❯</button>
             </div>
         `;
 
-        $('#we-option-combine').after(html);
+        $(".product-detail").after(html);
     };
 
     const buildCSS = () => {
         const css = `
-            .carousel-container {
+            .custom-carousel-container {
                 max-width: 100%;
                 margin: 20px auto;
                 position: relative;
                 padding: 0 60px;
             }
-            .carousel-title {
-                font-size: 20px;
+            .custom-carousel-title {
+                font-size: 32px;
                 margin-bottom: 20px;
-                color: #333;
+                color: #29323b;
+                font-weight: lighter;
             }
-            .product-carousel {
+            .custom-product-carousel {
                 display: flex;
                 overflow: hidden;
                 scroll-behavior: smooth;
                 gap: 15px;
             }
-            .product-card {
+            .custom-product-card {
                 flex: 0 0 calc((100% - (15px * 5)) / 6.5);
                 min-width: calc((100% - (15px * 5)) / 6.5);
                 position: relative;
             }
-            .product-card a {
+            .custom-product-card a {
                 text-decoration: none;
             }
-            .product-card a:hover {
+            .custom-product-card a:hover {
                 text-decoration: none;
             }
-            .product-image {
+            .custom-product-image {
                 width: 100%;
                 margin-bottom: 10px;
             }
-            .product-title {
-                font-size: 14px;
-                color: #333;
-                margin: 8px 0;
-                overflow: hidden;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
+            .custom-product-title {
+                color: #302e2b;
             }
-            .product-price {
+            .custom-product-price {
                 font-size: 16px;
                 color: #193db0;
                 font-weight: bold;
             }
-            .heart-icon {
+            .custom-heart-icon {
                 position: absolute;
                 top: 10px;
                 right: 10px;
@@ -154,10 +149,10 @@
                 align-items: center;
                 justify-content: center;
             }
-            .heart-icon.active {
-                color: #0066cc;
+            .custom-heart-icon.active {
+                color: #193db1;
             }
-            .carousel-button {
+            .custom-carousel-button {
                 position: absolute;
                 top: 50%;
                 transform: translateY(-50%);
@@ -171,48 +166,51 @@
                 justify-content: center;
                 z-index: 10;
             }
-            .carousel-button.prev { left: 10px; }
-            .carousel-button.next { right: 10px; }
+            .custom-carousel-button.custom-prev { left: 10px; }
+            .custom-carousel-button.custom-next { right: 10px; }
             
             @media (max-width: 768px) {
-                .product-card {
+                .custom-product-card {
                     flex: 0 0 calc((100% - (15px * 1)) / 2.5);
                     min-width: calc((100% - (15px * 1)) / 2.5);
                 }
-                .carousel-container {
+                .custom-carousel-container {
                     padding: 0 30px;
                 }
-                .carousel-title {
+                .custom-carousel-title {
                     font-size: 16px;
                 }
-                .product-price {
+                .custom-product-price {
                     font-size: 14px;
                 }
-                .carousel-button.prev { left: 5px; }
-                .carousel-button.next { right: 5px; }
+                .custom-carousel-button.custom-prev { left: 5px; }
+                .custom-carousel-button.custom-next { right: 5px; }
             }
         `;
 
-        $('<style>').addClass('carousel-style').html(css).appendTo('head');
+        // Only add styles if they don't already exist
+        if (!document.querySelector('.custom-carousel-style')) {
+            $('<style>').addClass('custom-carousel-style').html(css).appendTo('head');
+        }
     };
 
     const setEvents = () => {
         let scrollAmount = 0;
-        const carousel = $('.product-carousel');
+        const carousel = $('.custom-product-carousel');
         const cardWidth = carousel.width() / 6.5;
 
-        $('.carousel-button.prev').on('click', () => {
+        $('.custom-carousel-button.custom-prev').on('click', () => {
             scrollAmount = Math.max(scrollAmount - cardWidth, 0);
             carousel.animate({ scrollLeft: scrollAmount }, 300);
         });
 
-        $('.carousel-button.next').on('click', () => {
+        $('.custom-carousel-button.custom-next').on('click', () => {
             const maxScroll = carousel[0].scrollWidth - carousel.width();
             scrollAmount = Math.min(scrollAmount + cardWidth, maxScroll);
             carousel.animate({ scrollLeft: scrollAmount }, 300);
         });
 
-        $('.heart-icon').on('click', function(e) {
+        $('.custom-heart-icon').on('click', function(e) {
             e.preventDefault();
             const productId = $(this).data('id');
             const isFavorited = toggleFavorite(productId);
