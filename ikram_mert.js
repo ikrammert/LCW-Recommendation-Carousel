@@ -169,6 +169,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                z-index: 10;
             }
             .carousel-button.prev { left: 10px; }
             .carousel-button.next { right: 10px; }
