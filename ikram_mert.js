@@ -64,7 +64,158 @@
         }
     };
 
+    const buildHTML = () => {
+        const favorites = getFavorites(); //favorileri al
+        const html = `
+            <div class="carousel-container">
+                <h2 class="carousel-title">You Might Also Like</h2> 
+                <button class="carousel-button prev">❮</button>
+                <div class="product-carousel">
+                    ${products.map(product => `
+                        <div class="product-card">
+                            <a href="${product.url}" target="_blank">
+                                <img src="${product.img}" alt="${product.name}" class="product-image">
+                                <p class="product-title">${product.name}</p>
+                                <div class="product-price">${product.price} TL</div>
+                            </a>
+                            <div class="heart-icon ${favorites.includes(product.id) ? 'active' : ''}" data-id="${product.id}">❤</div>
+                        </div>
+                    `).join('')}
+                </div>
+                <button class="carousel-button next">❯</button>
+            </div>
+        `;
 
+        $('#we-option-combine').after(html);
+    };
+
+    const buildCSS = () => {
+        const css = `
+            .carousel-container {
+                max-width: 100%;
+                margin: 20px auto;
+                position: relative;
+                padding: 0 40px;
+            }
+            .carousel-title {
+                font-size: 20px;
+                margin-bottom: 20px;
+                color: #333;
+            }
+            .product-carousel {
+                display: flex;
+                overflow: hidden;
+                scroll-behavior: smooth;
+                gap: 15px;
+            }
+            .product-card {
+                flex: 0 0 calc((100% - (15px * 5)) / 6.5);
+                min-width: calc((100% - (15px * 5)) / 6.5);
+                position: relative;
+            }
+            .product-card a {
+                text-decoration: none;
+            }
+            .product-card a:hover {
+                text-decoration: none;
+            }
+            .product-image {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            .product-title {
+                font-size: 14px;
+                color: #333;
+                margin: 8px 0;
+                overflow: hidden;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+            }
+            .product-price {
+                font-size: 16px;
+                color: #193db0;
+                font-weight: bold;
+            }
+            .heart-icon {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                cursor: pointer;
+                font-size: 20px;
+                color: #ccc;
+                background: #fff;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .heart-icon.active {
+                color: #0066cc;
+            }
+            .carousel-button {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                background: white;
+                border: 1px solid #ddd;
+                width: 40px;
+                height: 40px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .carousel-button.prev { left: 0; }
+            .carousel-button.next { right: 0; }
+        `;
+
+        $('<style>').addClass('carousel-style').html(css).appendTo('head');
+    };
+
+    const setEvents = () => {
+        let scrollAmount = 0;
+        const carousel = $('.product-carousel');
+        const cardWidth = carousel.width() / 6.5;
+
+        $('.carousel-button.prev').on('click', () => {
+            scrollAmount = Math.max(scrollAmount - cardWidth, 0);
+            carousel.animate({ scrollLeft: scrollAmount }, 300);
+        });
+
+        $('.carousel-button.next').on('click', () => {
+            const maxScroll = carousel[0].scrollWidth - carousel.width();
+            scrollAmount = Math.min(scrollAmount + cardWidth, maxScroll);
+            carousel.animate({ scrollLeft: scrollAmount }, 300);
+        });
+
+        $('.heart-icon').on('click', function(e) {
+            e.preventDefault();
+            const productId = $(this).data('id');
+            const isFavorited = toggleFavorite(productId);
+            $(this).toggleClass('active', isFavorited);
+        });
+    };
+
+    const getFavorites = () => {
+        const favorites = localStorage.getItem(FAVORITES_KEY);
+        return favorites ? JSON.parse(favorites) : [];
+    };
+
+    const toggleFavorite = (productId) => {
+        const favorites = getFavorites();
+        const index = favorites.indexOf(productId);
+        
+        if (index === -1) {
+            favorites.push(productId);
+        } else {
+            favorites.splice(index, 1);
+        }
+        
+        localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+        return index === -1;
+    };
 
     init();
 })(); 
